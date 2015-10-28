@@ -1,13 +1,22 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 var clients = [];
+var groups = [];
+
+function getGroupCode(){
+
+}
 
 var server = http.createServer(function(request, response) {
     // process HTTP request. Since we're writing just WebSockets server
     // we don't have to implement anything.
 });
-server.listen(1337, function() {
-  console.log((new Date()) + " Server is listening on port 1337");
+
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8003
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+ 
+server.listen(server_port, server_ip_address, function () {
+  console.log( "Listening on " + server_ip_address + ", server_port " + server_port )
 });
 
 // create the server
@@ -41,6 +50,27 @@ wsServer.on('request', function(request) {
             });
         }
     });
+    // register code
+    connection.on('register', function() {
+        // process WebSocket register
+        console.log((new Date()) + ': Register');
+        // broadcast message to all connected clients
+        connection.codeGroup = ""
+        
+    });
+    connection.on('join', function(message) {
+        if (message.type === 'utf8') {
+            // process WebSocket message
+            console.log((new Date()) + ' Received Message ' + message.utf8Data);
+            // broadcast message to all connected clients
+            clients.forEach(function (outputConnection) {
+                if (outputConnection != connection) {
+                  outputConnection.send(message.utf8Data, sendCallback);
+                }
+            });
+        }
+    });
+
     
     connection.on('close', function(connection) {
         // close user connection

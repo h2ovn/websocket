@@ -1,8 +1,12 @@
 {
-  "name": "my-websocket",
-  "version": "0.0.1",
-  "description": "my websocket",
-  "dependencies": {
-    "websocket": "^1.0.22"
-  }
+	"name": "my-websocket",
+	"version": "0.0.1",
+	"description": "my websocket",
+	"dependencies": {
+		"websocket": "^1.0.22"
+	},
+	"scripts": {
+		"start": "node index.js"
+	},
+	"main": "index.js"
 }
